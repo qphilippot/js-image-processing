@@ -1,0 +1,26 @@
+{
+  "name": "image-processing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://qphilippot@bitbucket.org/qphilippot/image-processing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/qphilippot/image-processing#readme",
+  "dependencies": {
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "file-loader": "^4.1.0",
+    "html-webpack-plugin": "^3.2.0"
+  }
+}

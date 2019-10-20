@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Image Processing</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>  
+</head>
+<body>
+    <input type="file" id="myFile"/>
+    <button id="grayscale">grayscale</button>
+    <canvas id="canvas"></canvas>
+    
+    <script>
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            
+            console.log('DOMCOntentLoaded')
+            var canvas = new MyCanvas('canvas');
+            canvas.setSize(800, 600);
+            canvas.clear();
+            
+            document.getElementById('myFile').onchange = function (evt) {
+                const target = evt.target || window.event.srcElement;
+                const files = target.files;
+
+                // get only the first
+                canvas.openImage(files[0]);       
+            };
+
+            document.getElementById('grayscale').addEventListener('click', () => {
+                mycanvas.drawImageData(mycanvas.getGrayscale(mycanvas.getImage()));
+            });
+            window.mycanvas = canvas;
+        });
+    </script>
+</body>
+</html>
