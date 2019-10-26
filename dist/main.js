@@ -98,6 +98,7 @@ class MyCanvas {
         this.dom_elt = document.getElementById(canvas_id);
         this.context = this.dom_elt.getContext('2d');
         this.image = null;
+        this.imageElt = null;
     }
 
     setSize(width, height) {
@@ -132,7 +133,7 @@ class MyCanvas {
     }
 
     loadImage(url) {
-        const image = new Image();
+        const imageElt = new Image();
         image.crossOrigin = "";
         image.src = url;
         image.onload = () => {
@@ -140,11 +141,17 @@ class MyCanvas {
         }
     }
 
+    reset() {
+        this.drawImageData(this.getImage());
+    }
+
     setImage(image) {
-        this.image = image;
+        this.imageElt = image;
         console.log(image.width, image.height)
         this.setSize(image.width, image.height);
         this.context.drawImage(image,0,0);
+
+        this.image = this.context.getImageData(0, 0, this.width, this.height);
     }
 
     drawImage(image) {
@@ -152,8 +159,164 @@ class MyCanvas {
         this.context.drawImage(image, 0, 0);
     }
 
+    sobel(image) {
+        const pixels = image.data;
+        const output = this.context.createImageData(image.width, image.height);
+
+        const x_sobel = [
+            [-1, 0, 1],
+            [-2, 0, 2],
+            [-1, 0, 1]
+        ];
+
+
+        const y_sobel = [
+            [-1, -2, -1],
+            [0, 0, 0],
+            [1, 2, 1]
+        ];
+
+
+        const row_offset = image.width * 4;
+
+        for (let i = 1; i < image.width - 2; i++) {
+            const x_offset = i * 4;
+            for (let j = 1; j < image.height - 2; j++) {
+                const y_offset = j * row_offset;
+                for (let k = 0; k < 3; k++) {
+                    const pixel_x = 
+                    (
+                        x_sobel[0][0] * pixels[
+                            y_offset - row_offset + 
+                            x_offset - 4 +
+                            k
+                        ]
+                    ) + (
+                        x_sobel[0][1] * pixels[
+                            y_offset - row_offset + 
+                            x_offset +
+                            k
+                        ]
+                    ) + (
+                        x_sobel[0][2] * pixels[
+                            y_offset - row_offset + 
+                            x_offset + 4 +
+                            k
+                        ]
+                    ) + (
+                        x_sobel[1][0] * pixels[
+                            y_offset + 
+                            x_offset - 4 +
+                            k
+                        ]
+                    ) + (
+                        x_sobel[1][1] * pixels[
+                            y_offset + 
+                            x_offset +
+                            k
+                        ]
+                    ) + (
+                        x_sobel[1][2] * pixels[
+                            y_offset + 
+                            x_offset + 4 +
+                            k
+                        ]
+                    ) + (
+                        x_sobel[2][0] * pixels[
+                            y_offset + row_offset + 
+                            x_offset - 4 +
+                            k
+                        ]
+                    ) + (
+                        
+                        x_sobel[2][1] * pixels[
+                            y_offset + row_offset + 
+                            x_offset +
+                            k
+                        ]
+                    ) + (
+                        x_sobel[2][2] * pixels[
+                            y_offset + row_offset + 
+                            x_offset + 4 +
+                            k
+                        ]
+                    );
+      
+         
+                    const pixel_y = 
+                    (
+                        y_sobel[0][0] * pixels[
+                            y_offset - row_offset + 
+                            x_offset - 4 +
+                            k
+                        ]
+                    ) + (
+                        y_sobel[0][1] * pixels[
+                            y_offset - row_offset + 
+                            x_offset +
+                            k
+                        ]
+                    ) + (
+                        y_sobel[0][2] * pixels[
+                            y_offset - row_offset + 
+                            x_offset + 4 +
+                            k
+                        ]
+                    ) + (
+                        y_sobel[1][0] * pixels[
+                            y_offset + 
+                            x_offset - 4 +
+                            k
+                        ]
+                    ) + (
+                        y_sobel[1][1] * pixels[
+                            y_offset + 
+                            x_offset +
+                            k
+                        ]
+                    ) + (
+                        y_sobel[1][2] * pixels[
+                            y_offset + 
+                            x_offset + 4 +
+                            k
+                        ]
+                    ) + (
+                        y_sobel[2][0] * pixels[
+                            y_offset + row_offset + 
+                            x_offset - 4 +
+                            k
+                        ]
+                    ) + (
+                        y_sobel[2][1] * pixels[
+                            y_offset + row_offset + 
+                            x_offset +
+                            k
+                        ]
+                    ) + (
+                        y_sobel[2][2] * pixels[
+                            y_offset + row_offset + 
+                            x_offset + 4 +
+                            k
+                        ]
+                    );
+                
+                    const intensity = Math.ceil(Math.sqrt(
+                        (pixel_x * pixel_x) + (pixel_y * pixel_y)
+                    ));
+          
+                    output.data[y_offset + x_offset + k] = intensity;
+                }
+
+                output.data[y_offset + x_offset + 3] = 255;
+            }
+        }
+
+            // todo grayscale
+        return output;
+    }
+
     getGrayscale(image) {
-        const original =  this.context.getImageData(0, 0, this.width, this.height);
+        const original =  image;
         const pixels = original.data; 
 
         const grayscale = this.context.createImageData(this.width, this.height);
@@ -173,6 +336,25 @@ class MyCanvas {
         }
 
         return grayscale;  
+    }
+
+    thresholding(threshold) {
+        const input = this.getGrayscale(this.getImage());
+        const pixels = input.data; 
+
+        const output = this.context.createImageData(this.width, this.height);
+
+        for(var i = 0; i < pixels.length; i += 4) {
+            const intensity = (pixels[i] >= threshold) ? 255 : 0; 
+
+            output.data[i] = intensity;
+            output.data[i + 1] = intensity;
+            output.data[i + 2] = intensity;
+            output.data[i + 3] = 255;
+
+        }
+
+        return output;
     }
 
     drawImageData(imageData) {
