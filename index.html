@@ -17,22 +17,54 @@
             
             
             console.log('DOMCOntentLoaded')
-            var canvas = new MyCanvas('canvas');
-            canvas.setSize(800, 600);
-            canvas.clear();
+            var viewer = new Viewer('canvas');
+            viewer.setSize(800, 600);
+            viewer.clear();
+
             
             document.getElementById('myFile').onchange = function (evt) {
                 const target = evt.target || window.event.srcElement;
                 const files = target.files;
 
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const image = new Image();
+                    image.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+
+                        const ctx = canvas.getContext('2d');
+                    
+                        ctx.drawImage(image, 0, 0);
+                        
+                        const rgbaImage = new RGBAImage({
+                            width: image.width,
+                            height: image.height,
+                            pixels: ctx.getImageData(0, 0, image.width, image.height).data
+                        });
+
+                        console.log(ctx.getImageData(0, 0, image.width, image.height), rgbaImage)
+                        viewer.setImage(rgbaImage);
+                    };
+        
+                    image.src = reader.result;
+                };
+        
+                reader.readAsDataURL(files[0]);
                 // get only the first
-                canvas.openImage(files[0]);       
+                // viewer.openImage(files[0]);       
             };
 
             document.getElementById('grayscale').addEventListener('click', () => {
-                mycanvas.drawImageData(mycanvas.getGrayscale(mycanvas.getImage()));
+                const image = viewer.getImage();
+                const grayscale = Transformations.RGBAToGrayscale(image);
+                viewer.drawImage(grayscale);
+                //mycanvas.drawImageData(mycanvas.getGrayscale(mycanvas.getImage()));
             });
-            window.mycanvas = canvas;
+
+
+            window.viewer = viewer;
         });
     </script>
 </body>
