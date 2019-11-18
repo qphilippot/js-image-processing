@@ -1,7 +1,8 @@
 window.Viewer = require('./models/layout/viewer.model');
 window.RGBAImage = require('./models/Image/RGBAImage.model');
 window.Transformations = {
-    RGBAToGrayscale: require('./transformations/converters/RGBAToGrayscale.converter')
+    RGBAToGrayscale: require('./transformations/converters/RGBAToGrayscale.converter'),
+    OCR: require('./transformations/OCR/tesseract.ocr')
 };
 
 class MyCanvas {

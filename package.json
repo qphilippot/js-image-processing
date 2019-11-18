@@ -15,6 +15,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/qphilippot/image-processing#readme",
   "dependencies": {
+    "tesseract.js": "^1.0.19",
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.5"
   },

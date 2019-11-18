@@ -15,7 +15,7 @@ module.exports = {
       })
   ],
 
-  watch: true,
+  // watch: true,
   output: {
     path: path.resolve('./dist'),
     filename: "[name].js",

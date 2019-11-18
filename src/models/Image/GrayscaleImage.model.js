@@ -10,6 +10,14 @@ class GrayscaleImage extends BasicImage {
         const converter = require('../../transformations/converters/GrayscaleToImageData.converter');
         return converter(this);
     }
+
+    threshold(threshold) {
+        const filter = require('../../transformations/filters/threshold.filter');
+        return filter(this, {
+            write: true,
+            threshold
+        });
+    }
 }
 
 module.exports = GrayscaleImage;
