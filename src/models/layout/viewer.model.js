@@ -7,7 +7,6 @@ class Viewer {
     }
 
     setSize(width, height) {
-        console.log('set size', width, height);
         // resolution
         this.dom_elt.width = width;
         this.dom_elt.height = height;
@@ -38,7 +37,6 @@ class Viewer {
     }
 
     drawImage(image) {
-        console.log('draw image', image)
         // this.context.drawImage(image, 0, 0);
         this.setSize(image.getWidth(), image.getHeight());
         image.render(this.context);
@@ -47,4 +45,4 @@ class Viewer {
 
 window.Viewer = Viewer;
 
-module.exports = Viewer;
+export default Viewer;

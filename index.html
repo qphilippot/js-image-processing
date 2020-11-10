@@ -14,9 +14,6 @@
     <script>
     
         document.addEventListener('DOMContentLoaded', function() {
-            
-            
-            console.log('DOMCOntentLoaded')
             var viewer = new Viewer('canvas');
             viewer.setSize(800, 600);
             viewer.clear();
@@ -44,7 +41,6 @@
                             pixels: ctx.getImageData(0, 0, image.width, image.height).data
                         });
 
-                        console.log(ctx.getImageData(0, 0, image.width, image.height), rgbaImage)
                         viewer.setImage(rgbaImage);
                     };
         

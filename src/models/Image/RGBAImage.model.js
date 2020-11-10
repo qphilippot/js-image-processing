@@ -1,4 +1,5 @@
-const BasicImage = require('./Image.model');
+import BasicImage from './Image.model';
+import RGBAToImageDataConverter from '../../transformations/converters/RGBAToImageData.converter';
 
 class RGBAImage extends BasicImage {
     constructor(settings = {}) {
@@ -7,9 +8,8 @@ class RGBAImage extends BasicImage {
     }
 
     getImageData() {
-        const converter = require('../../transformations/converters/RGBAToImageData.converter');
-        return converter(this);
+        return RGBAToImageDataConverter(this);
     }
 }
 
-module.exports = RGBAImage;
+export default RGBAImage;

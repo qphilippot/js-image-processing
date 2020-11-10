@@ -1,8 +1,12 @@
-window.Viewer = require('./models/layout/viewer.model');
-window.RGBAImage = require('./models/Image/RGBAImage.model');
+import Viewer from './models/layout/viewer.model';
+import RGBAImage from './models/Image/RGBAImage.model';
+import RGBAToGrayscale from './transformations/converters/RGBAToGrayscale.converter';
+
+
+window.Viewer = Viewer;
+window.RGBAImage = RGBAImage;
 window.Transformations = {
-    RGBAToGrayscale: require('./transformations/converters/RGBAToGrayscale.converter'),
-    OCR: require('./transformations/OCR/tesseract.ocr')
+    RGBAToGrayscale: RGBAToGrayscale
 };
 
 class MyCanvas {
@@ -59,7 +63,6 @@ class MyCanvas {
 
     setImage(image) {
         this.imageElt = image;
-        console.log(image.width, image.height)
         this.setSize(image.width, image.height);
         this.context.drawImage(image,0,0);
 
@@ -67,7 +70,6 @@ class MyCanvas {
     }
 
     drawImage(image) {
-        console.log(image)
         this.context.drawImage(image, 0, 0);
     }
 
@@ -102,7 +104,6 @@ class MyCanvas {
     }
 
     drawImageData(imageData) {
-        console.log('drawImageData', imageData);
         this.context.putImageData(imageData, 0, 0);
     }
 
@@ -115,9 +116,6 @@ class MyCanvas {
     }
 }
 
-if (typeof module !== 'undefined') {
-    module.exports = MyCanvas;
-}
 
 if (typeof window !== 'undefined') {
     window.MyCanvas = MyCanvas;

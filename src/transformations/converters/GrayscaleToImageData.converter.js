@@ -1,4 +1,4 @@
-module.exports = function(grayscaleImage) {
+function convert(grayscaleImage) {
     const context = document.createElement('canvas').getContext('2d');
     const imageData = context.createImageData(
         grayscaleImage.getWidth(),
@@ -16,4 +16,6 @@ module.exports = function(grayscaleImage) {
     }
 
     return imageData;
-};
+}
+
+export default convert;

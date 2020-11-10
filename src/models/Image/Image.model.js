@@ -2,7 +2,7 @@ class BasicImage {
     constructor(settings = {}) {
         this.mimetype = '';
         this.pixels = [];
-        this.nbChannel = 4;
+        this.nbChannel = settings.nbChannels || 4;
         this.resolution = {
             x: settings.width || 0,
             y: settings.height || 0
@@ -14,6 +14,10 @@ class BasicImage {
 
         else {
             this.pixels = settings.pixels;
+
+            if (this.resolution.x * this.resolution.y * this.nbChannel !== this.pixels.length) {
+                console.error(this.resolution.x * this.resolution.y * this.nbChannel, '!=', this.pixels.length, this);
+            }
         }
     }
 
@@ -47,9 +51,8 @@ class BasicImage {
 
     render(context) {
         const imageData = this.getImageData();
-        console.log(imageData);
         context.putImageData(imageData, 0, 0);
     }
 }
 
-module.exports = BasicImage;
+export default BasicImage;

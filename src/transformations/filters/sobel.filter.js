@@ -12,7 +12,7 @@ const y_sobel = [
 ];
 
 
-module.exports = function(image) {
+function filter(image) {
     const input_pixels = image.getPixels();
 
     
@@ -160,4 +160,6 @@ module.exports = function(image) {
             //output.data[y_offset + x_offset + 3] = 255;
         }
     }
-};
+}
+
+export default filter;

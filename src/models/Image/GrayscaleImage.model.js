@@ -1,4 +1,5 @@
-const BasicImage = require('./RGBAImage.model');
+import BasicImage from './RGBAImage.model';
+import GrayscaleToImageData from '../../transformations/converters/GrayscaleToImageData.converter';
 
 class GrayscaleImage extends BasicImage {
     constructor(settings = {}) {
@@ -7,12 +8,11 @@ class GrayscaleImage extends BasicImage {
     }
 
     getImageData() {
-        const converter = require('../../transformations/converters/GrayscaleToImageData.converter');
-        return converter(this);
+        return GrayscaleToImageData(this);
     }
 
     threshold(threshold) {
-        const filter = require('../../transformations/filters/threshold.filter');
+        // const filter = require('../../transformations/filters/threshold.filter');
         return filter(this, {
             write: true,
             threshold
@@ -20,4 +20,4 @@ class GrayscaleImage extends BasicImage {
     }
 }
 
-module.exports = GrayscaleImage;
+export default GrayscaleImage;
