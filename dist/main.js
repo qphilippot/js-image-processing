@@ -514,7 +514,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function convert(RGBAImage) {
     const input_pixels = RGBAImage.getPixels();
-    const grayscalesPixels = Object(_filters_RGBToGrayscale_filter__WEBPACK_IMPORTED_MODULE_1__["default"])(input_pixels);
+    const grayscalesPixels = _filters_RGBToGrayscale_filter__WEBPACK_IMPORTED_MODULE_1__["default"].filter(input_pixels, { format: "AlphaImageData" });
     const reducedPixelsBuffer = Object(_ChannelReducer__WEBPACK_IMPORTED_MODULE_2__["default"])(grayscalesPixels, 4, [0, 1, 2]);
 
     return new _models_Image_GrayscaleImage_model__WEBPACK_IMPORTED_MODULE_0__["default"]({
@@ -568,30 +568,57 @@ function convert (basicImage) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
  /**
+  * 
+  * @param {Uint8Array} buffer 
+  * @param {Number} offset 
+  */
+ function applyToPixel(buffer, offset) {
+    return Math.ceil((
+        0.30 * buffer[offset] + 
+        0.59 * buffer[offset + 1] + 
+        0.11 * buffer[offset + 2]
+    ) * (buffer[offset + 4] / 255.0)); 
+ }
+
+
+ 
+ /**
   * @param {Uint8Array} pixels
   * @return {Uint8Array} 
   */
- function rgbTograyscale(input_pixels) {
-    const output_pixels = new Uint8Array(input_pixels.length);
+ function rgbTograyscale(input_pixels, settings = {}) {
+    let output_pixels;
+    let writePixel;
 
+    if (settings.format === "AlphaImageData") {
+        output_pixels = new Uint8Array(input_pixels.length);
+        writePixel = (pixelOffset, intensity) => {
+            output_pixels[pixelOffset] = 255;
+            output_pixels[pixelOffset + 1] = 255;
+            output_pixels[pixelOffset + 2] = 255;
+            output_pixels[pixelOffset + 3] = intensity
+        };
+    }
+
+    else {
+        output_pixels = new Uint8Array(input_pixels.length / 4);
+        writePixel = (pixelOffset, intensity) => {
+            output_pixels[pixelOffset] = intensity;
+        };
+    }
+   
     for (let i = 0; i < input_pixels.length; i += 4) {
-        const intensity = Math.ceil((
-            0.30 * input_pixels[i] + 
-            0.59 * input_pixels[i + 1] + 
-            0.11 * input_pixels[i + 2]
-        ) * (input_pixels[i + 4] / 255.0)); 
-        
-
-        output_pixels[i] = 255;
-        output_pixels[i + 1] = 255;
-        output_pixels[i + 2] = 255;
-        output_pixels[i + 3] = intensity;
+        const intensity = applyToPixel(input_pixels, i);
+        writePixel(i, intensity);
     }
 
     return output_pixels;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (rgbTograyscale);
+/* harmony default export */ __webpack_exports__["default"] = ({
+    filter: rgbTograyscale,
+    applyToPixel: applyToPixel
+});
 
 
 /***/ })

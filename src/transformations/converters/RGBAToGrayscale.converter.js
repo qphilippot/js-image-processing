@@ -4,7 +4,7 @@ import ChannelReducer from './ChannelReducer';
 
 function convert(RGBAImage) {
     const input_pixels = RGBAImage.getPixels();
-    const grayscalesPixels = RGBAToGrayscaleFilter(input_pixels);
+    const grayscalesPixels = RGBAToGrayscaleFilter.filter(input_pixels, { format: "AlphaImageData" });
     const reducedPixelsBuffer = ChannelReducer(grayscalesPixels, 4, [0, 1, 2]);
 
     return new GrayscaleImage({
